@@ -1,0 +1,136 @@
+/* --- ESTILOS GENERALES Y UI --- */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #2e8b57;
+            /* Verde bosque base */
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            cursor: none;
+            /* Ocultar cursor por defecto */
+            user-select: none;
+        }
+
+        /* Fondo decorativo (Árboles simples con CSS) */
+        .tree {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid #226622;
+            z-index: 0;
+        }
+
+        /* UI: Timer Bar */
+        #timer-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 30px;
+            background-color: #333;
+            border: 4px solid #fff;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #ffcc00;
+            /* Amarillo alerta */
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        /* --- ELEMENTOS DEL JUEGO --- */
+
+        /* Cursor: Cubo de Agua */
+        #water-cursor {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #00ffff;
+            /* Azul cian brillante */
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px #00ffff;
+            pointer-events: none;
+            /* Para que el click pase a través */
+            z-index: 100;
+            transform: translate(-50%, -50%);
+            /* Centrar en el ratón */
+            transition: transform 0.1s ease;
+        }
+
+        #water-cursor.active {
+            transform: translate(-50%, -50%) scale(0.8);
+            /* Efecto de click */
+            background-color: #0088ff;
+        }
+
+        /* Fuego */
+        .fire {
+            position: absolute;
+            font-size: 50px;
+            cursor: pointer;
+            /* Aunque no se vea el cursor, es interactuable */
+            z-index: 5;
+            user-select: none;
+            animation: burn 0.5s infinite alternate;
+        }
+
+        @keyframes burn {
+            0% {
+                transform: scale(1) rotate(-5deg);
+                filter: brightness(100%);
+            }
+
+            100% {
+                transform: scale(1.1) rotate(5deg);
+                filter: brightness(120%);
+            }
+        }
+
+        /* --- PANTALLAS DE ESTADO --- */
+        #game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            visibility: hidden;
+            /* Oculto por defecto */
+            color: white;
+            text-align: center;
+        }
+
+        #game-overlay h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 0 #000;
+        }
+
+        #game-overlay p {
+            font-size: 1.5rem;
+        }
+
+        /* Clases de estado para el bosque */
+        body.burnt {
+            background-color: #442222 !important;
+            /* Rojo oscuro ceniza */
+        }
+
+        body.burnt .tree {
+            border-bottom-color: #221111 !important;
+            /* Árboles quemados */
+        }

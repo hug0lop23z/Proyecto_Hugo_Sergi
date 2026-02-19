@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apaga el Fuego - Microjuego</title>
+    <link rel="stylesheet" href="css/bosque.css">
+</head>
+
+<body>
+
+    <!-- UI -->
+    <div id="timer-container">
+        <div id="timer-bar"></div>
+    </div>
+
+    <!-- Cursor Personalizado -->
+    <div id="water-cursor"></div>
+
+    <!-- Contenedor del Juego -->
+    <div id="game-area">
+        <!-- Los fuegos se generarán aquí -->
+        <!-- Fondo Decorativo (Árboles estáticos) -->
+        <div class="tree" style="top: 100px; left: 100px;"></div>
+        <div class="tree" style="top: 300px; right: 200px;"></div>
+        <div class="tree" style="bottom: 150px; left: 300px;"></div>
+        <div class="tree" style="top: 50px; right: 50px;"></div>
+        <div class="tree" style="bottom: 50px; right: 400px;"></div>
+    </div>
+
+    <!-- Pantalla Fin de Juego -->
+    <div id="game-overlay">
+        <h1 id="overlay-title"></h1>
+        <p id="overlay-msg"></p>
+    </div>
+
+    <script src="js/bosque.js"></script>
+</body>
+
+</html>

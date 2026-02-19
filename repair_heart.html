@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repara el Corazón - Microjuego</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/heart.css">
+</head>
+
+<body>
+
+    <div id="timer-container">
+        <div id="timer-bar"></div>
+    </div>
+
+    <div id="instructions">¡REPARA!</div>
+
+    <div id="heart-container">
+        <!-- SVG Heart split in two -->
+        <svg viewBox="0 0 100 100" width="200" height="200" overflow="visible">
+            <!-- Left Half -->
+            <g id="left-half">
+                <path d="M50 85 L15 50 A 20 20 0 0 1 50 25 Z" class="heart-half" />
+            </g>
+            <!-- Right Half -->
+            <g id="right-half">
+                <path d="M50 85 L85 50 A 20 20 0 0 0 50 25 Z" class="heart-half" />
+            </g>
+            <!-- Overlay for visuals (optional jagged line could be added here) -->
+        </svg>
+    </div>
+
+    <div id="feedback"></div>
+
+    <div id="debug-info">
+        Score: <span id="debug-score">0</span><br>
+        Required Clicks: <span id="debug-req">0</span><br>
+        Lives: <span id="debug-lives">3</span>
+    </div>
+
+    <script src="js/heart.js"></script>
+</body>
+
+</html>

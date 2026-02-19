@@ -1,0 +1,325 @@
+/**
+ * Configuración del Juego
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// UI Elements
+const scoreEl = document.getElementById('score-display');
+const levelEl = document.getElementById('level-display');
+const livesEl = document.getElementById('lives-display');
+const gameOverScreen = document.getElementById('game-over-screen');
+const victoryScreen = document.getElementById('victory-screen');
+const finalScoreEl = document.getElementById('final-score');
+
+// Constantes
+const LANE_COUNT = 3;
+const LANE_WIDTH = canvas.width / LANE_COUNT;
+const FISH_SIZE = 40;
+const HARPOON_WIDTH = 10;
+const HARPOON_HEIGHT = 60;
+const WIN_SCORE = 30;
+
+// Estado del Juego
+let gameState = {
+    isRunning: false,
+    score: 0,
+    level: 1,
+    lives: 3,
+    fishLane: 1, // 0: Izquierda, 1: Centro, 2: Derecha
+    harpoons: [],
+    frames: 0,
+    speed: 3 // Velocidad inicial
+};
+
+// Cargar imágenes/emojis
+// Usaremos dibujado simple con canvas para asegurar que funcione sin assets externos
+const fishEmoji = "🐟";
+const harpoonEmoji = "🔱"; // O dibujar una flecha
+
+/**
+ * Inicialización
+ */
+function init() {
+    // Resetear estado
+    gameState = {
+        isRunning: true,
+        score: 0,
+        level: 1,
+        lives: 3,
+        fishLane: 1,
+        harpoons: [],
+        frames: 0,
+        speed: 4 // Velocidad base Nivel 1
+    };
+
+    // Ocultar pantallas
+    gameOverScreen.style.display = 'none';
+    victoryScreen.style.display = 'none';
+
+    // Actualizar UI inicial
+    updateUI();
+
+    // Iniciar loop
+    animloop();
+}
+
+function reiniciarJuego() {
+    init();
+}
+
+/**
+ * Input del Usuario
+ */
+window.addEventListener('keydown', (e) => {
+    if (!gameState.isRunning) return;
+
+    if (e.key === 'ArrowLeft') {
+        if (gameState.fishLane > 0) {
+            gameState.fishLane--;
+        }
+    } else if (e.key === 'ArrowRight') {
+        if (gameState.fishLane < LANE_COUNT - 1) {
+            gameState.fishLane++;
+        }
+    }
+});
+
+/**
+ * Lógica de Actualización
+ */
+function update() {
+    if (!gameState.isRunning) return;
+
+    gameState.frames++;
+
+    // Aumentar dificultad y velocidad según puntuación
+    checkLevel();
+
+    // Spawneamos arpones
+    // La frecuencia de spawn depende de la velocidad también para mantener el reto
+    let spawnRate = 60; // Base: cada 60 frames (1 seg a 60fps)
+    if (gameState.level === 2) spawnRate = 45;
+    if (gameState.level === 3) spawnRate = 30;
+
+    if (gameState.frames % spawnRate === 0) {
+        spawnHarpoon();
+    }
+
+    // Mover arpones
+    for (let i = 0; i < gameState.harpoons.length; i++) {
+        let h = gameState.harpoons[i];
+        h.y += gameState.speed;
+
+        // Colisión con el pez
+        // El pez está en X según su carril, y Y fijo abajo
+        // Definimos hitbox simple
+        const fishX = getLaneCenter(gameState.fishLane);
+        const fishY = canvas.height - 80; // Posición fija Y del pez
+
+        // Chequeo de colisión (caja AABB simple centrada)
+        // Pez hitbox aprox: x-20 a x+20, y-20 a y+20
+        // Arpón hitbox: h.x-5 a h.x+5, h.y a h.y+60
+        if (
+            gameState.fishLane === h.lane && // Misma linea
+            h.y + HARPOON_HEIGHT > fishY - FISH_SIZE/2 && // Arpón llega al top del pez
+            h.y < fishY + FISH_SIZE/2 // Arpón no ha pasado completamente el pez
+        ) {
+            // Impacto!
+            handleCollision(i);
+            i--; // Ajustar índice porque eliminamos elemento
+            continue;
+        }
+
+        // Salir de pantalla
+        if (h.y > canvas.height) {
+            // Esquivado exitosamente
+            gameState.score++;
+            updateUI();
+            checkWin();
+            gameState.harpoons.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+function checkLevel() {
+    // Nivel 1: 0-10 (Speed 4)
+    // Nivel 2: 11-20 (Speed 7)
+    // Nivel 3: 21-29 (Speed 10)
+    
+    let oldLevel = gameState.level;
+
+    if (gameState.score >= 21) {
+        gameState.level = 3;
+        gameState.speed = 10;
+    } else if (gameState.score >= 11) {
+        gameState.level = 2;
+        gameState.speed = 7;
+    } else {
+        gameState.level = 1;
+        gameState.speed = 4;
+    }
+
+    if (oldLevel !== gameState.level) {
+        updateUI();
+    }
+}
+
+function spawnHarpoon() {
+    const lane = Math.floor(Math.random() * LANE_COUNT);
+    gameState.harpoons.push({
+        lane: lane,
+        y: -HARPOON_HEIGHT // Empieza arriba fuera de pantalla
+    });
+}
+
+function handleCollision(index) {
+    // Eliminar arpón
+    gameState.harpoons.splice(index, 1);
+    
+    // Quitar vida
+    gameState.lives--;
+    updateUI();
+
+    // Check Game Over
+    if (gameState.lives <= 0) {
+        gameOver();
+    } else {
+        // Efecto visual de daño (opcional: parpadeo fondo)
+        canvas.style.backgroundColor = "#ff5555";
+        setTimeout(() => {
+            canvas.style.backgroundColor = "#006994";
+        }, 100);
+    }
+}
+
+function checkWin() {
+    if (gameState.score >= WIN_SCORE) {
+        victory();
+    }
+}
+
+function gameOver() {
+    gameState.isRunning = false;
+    finalScoreEl.textContent = gameState.score;
+    gameOverScreen.style.display = 'flex';
+}
+
+function victory() {
+    gameState.isRunning = false;
+    victoryScreen.style.display = 'flex';
+}
+
+function updateUI() {
+    scoreEl.textContent = `Puntos: ${gameState.score}`;
+    levelEl.textContent = `Nivel: ${gameState.level}`;
+    livesEl.textContent = `Vidas: ${gameState.lives}`;
+}
+
+/**
+ * Dibujado
+ */
+function draw() {
+    // Limpiar canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar Carriles (líneas divisorias tenues)
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 1; i < LANE_COUNT; i++) {
+        let x = i * LANE_WIDTH;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+    }
+    ctx.stroke();
+
+    // Dibujar Personaje (Pez)
+    const fishX = getLaneCenter(gameState.fishLane);
+    const fishY = canvas.height - 80;
+    
+    // Sombra
+    ctx.fillStyle = "rgba(0,0,0,0.3)";
+    ctx.beginPath();
+    ctx.ellipse(fishX, fishY + 20, 15, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cuerpo del pez (simple shape)
+    ctx.fillStyle = "#FFD700"; // Gold
+    ctx.beginPath();
+    ctx.ellipse(fishX, fishY, 20, 30, 0, 0, Math.PI * 2); // Cuerpo vertical ovalado
+    ctx.fill();
+    
+    // Aletas
+    ctx.fillStyle = "#FFA500";
+    ctx.beginPath();
+    ctx.moveTo(fishX - 20, fishY);
+    ctx.lineTo(fishX - 35, fishY - 10);
+    ctx.lineTo(fishX - 35, fishY + 10);
+    ctx.fill(); // Aleta izquierda
+
+    ctx.beginPath(); // Aleta derecha
+    ctx.moveTo(fishX + 20, fishY);
+    ctx.lineTo(fishX + 35, fishY - 10);
+    ctx.lineTo(fishX + 35, fishY + 10);
+    ctx.fill();
+
+    // Ojos
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(fishX - 8, fishY - 10, 6, 0, Math.PI * 2); // Ojo izq
+    ctx.arc(fishX + 8, fishY - 10, 6, 0, Math.PI * 2); // Ojo der
+    ctx.fill();
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(fishX - 8, fishY - 10, 2, 0, Math.PI * 2);
+    ctx.arc(fishX + 8, fishY - 10, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Emoji alternativo si se prefiere:
+    // ctx.font = "40px Arial";
+    // ctx.textAlign = "center";
+    // ctx.textBaseline = "middle";
+    // ctx.fillText(fishEmoji, fishX, fishY);
+
+
+    // Dibujar Arpones
+    for (let h of gameState.harpoons) {
+        const hX = getLaneCenter(h.lane);
+        const hY = h.y;
+
+        // Dibujar Arpón (formado geométrico)
+        ctx.fillStyle = "#Silver";
+        ctx.fillRect(hX - 2, hY, 4, HARPOON_HEIGHT); // Palo
+
+        // Punta
+        ctx.fillStyle = "#Red";
+        ctx.beginPath();
+        ctx.moveTo(hX - 8, hY + HARPOON_HEIGHT); // Izq
+        ctx.lineTo(hX + 8, hY + HARPOON_HEIGHT); // Der
+        ctx.lineTo(hX, hY + HARPOON_HEIGHT + 15); // Punta abajo
+        ctx.fill();
+        
+        // Emoji alternativo:
+        // ctx.fillText(harpoonEmoji, hX, hY + 30);
+    }
+}
+
+function getLaneCenter(laneIndex) {
+    return (laneIndex * LANE_WIDTH) + (LANE_WIDTH / 2);
+}
+
+/**
+ * Loop Principal
+ */
+function animloop() {
+    if (gameState.isRunning) {
+        requestAnimationFrame(animloop);
+        update();
+        draw();
+    }
+}
+
+// Arrancar juego al cargar
+init();

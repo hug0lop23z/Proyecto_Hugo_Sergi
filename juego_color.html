@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Color Matcher</title>
+    <!-- Fuente moderna para un diseño premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/juego_color.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <h1>Misterio Frutal</h1>
+            <div class="score-board">Puntuación: <span id="score">0</span></div>
+            <div class="timer-container">
+                <div id="timer-bar"></div>
+            </div>
+        </header>
+
+        <main id="game-area">
+            <!-- Las frutas se generarán aquí dinámicamente -->
+        </main>
+
+        <div id="game-over-modal" class="hidden glass-modal">
+            <h2>¡Juego Terminado!</h2>
+            <p>Puntuación Final: <span id="final-score">0</span></p>
+            <button id="restart-btn">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script src="js/juego_color.js"></script>
+</body>
+
+</html>

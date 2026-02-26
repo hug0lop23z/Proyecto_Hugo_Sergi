@@ -1,0 +1,206 @@
+/* --- Variables y Reset --- */
+:root {
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e1b4b;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --primary-gradient: linear-gradient(135deg, #ec4899, #8b5cf6);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    font-family: 'Outfit', sans-serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    user-select: none; /* Prevenir selección de texto al hacer clic rápido */
+}
+
+/* --- Contenedor Principal --- */
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    height: 100vh;
+    max-height: 850px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* --- Cabecera Glassmorphism --- */
+.glass-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 20px 25px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin-bottom: 24px;
+    z-index: 10;
+}
+
+h1 {
+    margin: 0 0 12px 0;
+    font-weight: 800;
+    font-size: 2.2rem;
+    background: linear-gradient(to right, #f472b6, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+}
+
+.score-board {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #e2e8f0;
+}
+
+#score {
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+/* --- Barra de Progreso del Temporizador --- */
+.timer-container {
+    width: 100%;
+    height: 14px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 7px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+#timer-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #34d399, #3b82f6);
+    transform-origin: left;
+    /* La transición se controla por JS */
+}
+
+/* --- Área de Juego --- */
+#game-area {
+    flex-grow: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease-out; /* Efecto sutil al puntuar */
+}
+
+/* --- Diseño de las Frutas (Círculos Brillantes) --- */
+.fruit {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    /* Sombras y reflejos para darles aspecto de "uva", "cereza" o fruta jugosa esférica */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fruit:hover {
+    transform: scale(1.15);
+}
+
+.fruit:active {
+    transform: scale(0.9);
+}
+
+/* Reflejo estilo "Glossy" para que la fruta se vea en 3D/Premium */
+.fruit::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 18px;
+    width: 18px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+/* --- Pantalla Modal Game Over --- */
+.glass-modal {
+    position: absolute;
+    inset: 0;
+    margin: 20px;
+    border-radius: 24px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.glass-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.glass-modal h2 {
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+    color: #fca5a5;
+}
+
+.glass-modal p {
+    font-size: 1.4rem;
+    color: #e2e8f0;
+    margin-bottom: 30px;
+}
+
+#final-score {
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+#restart-btn {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
+    background: var(--primary-gradient);
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+}
+
+#restart-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.6);
+}
+
+#restart-btn:active {
+    transform: translateY(1px) scale(0.98);
+}

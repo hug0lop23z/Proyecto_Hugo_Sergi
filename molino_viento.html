@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salva el Molino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/molino_viento.css">
+</head>
+
+<body>
+    <div class="ui-container">
+        <div class="score-board">
+            <h2>Puntos: <span id="score">0</span></h2>
+            <div id="target-score">Objetivo: 30</div>
+            <div id="timer-display" style="margin-top: 10px; font-size: 1.2rem; font-weight: bold; color: #fca5a5;">
+                ⏱️ Tiempo: <span id="timer">90</span>s
+            </div>
+        </div>
+        <div class="instructions">
+            <p>🌬️ Deja pasar el viento (+1pto)</p>
+            <p>☁️ Pulsa las nubes para destruirlas (-2pts si tocan el molino)</p>
+        </div>
+    </div>
+
+    <!-- Canvas para el juego -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Modal de Fin de Juego -->
+    <div id="game-over-modal" class="hidden modal">
+        <div class="modal-content">
+            <h1 id="modal-title">¡Juego Terminado!</h1>
+            <p id="modal-desc">Has perdido la energía del molino.</p>
+            <p class="final-score-text">Puntuación Final: <span id="final-score">0</span></p>
+            <button id="restart-btn">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script src="js/molino_viento.js"></script>
+</body>
+
+</html>

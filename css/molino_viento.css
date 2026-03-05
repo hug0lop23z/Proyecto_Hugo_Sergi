@@ -1,0 +1,198 @@
+/* Reset y variables */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
+    /* Evitar scrollbars */
+    background: #38bdf8;
+    /* Cielo claro por defecto, aunque el canvas cubrirá esto */
+    user-select: none;
+    touch-action: none;
+    /* Para evitar gestos del navegador en móviles */
+}
+
+/* Canvas del juego a pantalla completa */
+#gameCanvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+}
+
+/* Interfaz Principal superpuesta al canvas */
+.ui-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    /* Dejar que los clics pasen al canvas */
+    z-index: 10;
+}
+
+.score-board {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.score-board h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+#target-score {
+    font-size: 1rem;
+    font-weight: 700;
+    opacity: 0.9;
+    margin-top: 5px;
+}
+
+.instructions {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.instructions p {
+    font-size: 1.1rem;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Modal de Fin de Juego (Glassmorphism premium) */
+.modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    pointer-events: auto;
+    /* Aquí sí capturamos clics */
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 50px;
+    border-radius: 30px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    transform: scale(1);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal.hidden .modal-content {
+    transform: scale(0.8);
+}
+
+.modal-content h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#modal-title.win {
+    color: #4ade80;
+    /* Verde victoria */
+}
+
+#modal-title.lose {
+    color: #f87171;
+    /* Rojo derrota */
+}
+
+.modal-content p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.final-score-text {
+    font-size: 2rem !important;
+    font-weight: 700;
+    margin-bottom: 40px !important;
+}
+
+#restart-btn {
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    color: white;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+    transition: all 0.2s ease;
+}
+
+#restart-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.6);
+}
+
+#restart-btn:active {
+    transform: translateY(2px) scale(0.95);
+}
+
+/* Responsividad básica */
+@media (max-width: 768px) {
+    .ui-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .score-board h2 {
+        font-size: 2rem;
+    }
+
+    .instructions p {
+        font-size: 0.9rem;
+    }
+
+    .modal-content {
+        padding: 30px;
+        width: 90%;
+    }
+
+    .modal-content h1 {
+        font-size: 2.5rem;
+    }
+}

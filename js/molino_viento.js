@@ -369,18 +369,36 @@ function terminarJuego(esVictoria, esTiempoAgotado = false) {
         modalTitle.textContent = "¡Victoria!";
         modalTitle.className = "win";
         modalDesc.textContent = "¡Has salvado la energía del molino al máximo nivel!";
-    } else if (esTiempoAgotado) {
-        modalTitle.textContent = "¡Tiempo Agotado!";
-        modalTitle.className = "lose";
-        modalDesc.textContent = "No lograste recolectar suficiente energía a tiempo.";
-    } else {
-        modalTitle.textContent = "¡Derrota!";
-        modalTitle.className = "lose";
-        modalDesc.textContent = "El molino se ha quedado sin energía ante la tormenta.";
-    }
 
-    finalScoreEl.textContent = score;
-    modal.classList.remove('hidden');
+        setTimeout(() => {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'game_result', win: true }, '*');
+            } else {
+                finalScoreEl.textContent = score;
+                modal.classList.remove('hidden');
+            }
+        }, 1500);
+
+    } else {
+        if (esTiempoAgotado) {
+            modalTitle.textContent = "¡Tiempo Agotado!";
+            modalTitle.className = "lose";
+            modalDesc.textContent = "No lograste recolectar suficiente energía a tiempo.";
+        } else {
+            modalTitle.textContent = "¡Derrota!";
+            modalTitle.className = "lose";
+            modalDesc.textContent = "El molino se ha quedado sin energía ante la tormenta.";
+        }
+
+        setTimeout(() => {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'game_result', win: false }, '*');
+            } else {
+                finalScoreEl.textContent = score;
+                modal.classList.remove('hidden');
+            }
+        }, 1500);
+    }
 }
 
 function iniciarJuego() {

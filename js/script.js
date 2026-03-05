@@ -57,5 +57,124 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
+    // --- LÓGICA DEL ORQUESTADOR (WarioWare Style) ---
+    const btnPlayHero = document.querySelector('.hero-content .cta-button');
+    const orchModal = document.getElementById('orchestrator-modal');
+    const iframe = document.getElementById('game-iframe');
+    const scoreSpan = document.getElementById('orch-score');
+    const livesDiv = document.getElementById('orch-lives');
+    const closeBtn = document.getElementById('orch-close');
+    const transitionOverlay = document.getElementById('orch-transition-overlay');
+    const transitionText = document.getElementById('orch-transition-text');
+
+    const microgames = [
+        'apaga_el_fuego.html',
+        'construye_la_torre.html',
+        'juego_color.html',
+        'juego_pescado.html',
+        'molino_viento.html',
+        'repair_heart.html'
+    ];
+
+    let currentScore = 0;
+    let currentLives = 3;
+
+    function updateOrchestratorUI() {
+        scoreSpan.textContent = currentScore;
+        let heartsHTML = '';
+        for (let i = 0; i < currentLives; i++) {
+            heartsHTML += '❤️';
+        }
+        for (let i = currentLives; i < 3; i++) {
+            heartsHTML += '🖤'; // Vidas perdidas
+        }
+        livesDiv.textContent = heartsHTML;
+    }
+
+    function initOrchestrator() {
+        currentScore = 0;
+        currentLives = 3;
+        updateOrchestratorUI();
+
+        orchModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevenir scroll lateral en el body main
+
+        loadRandomGame();
+    }
+
+    function closeOrchestrator() {
+        orchModal.classList.add('hidden');
+        iframe.src = "about:blank";
+        document.body.style.overflow = ''; // Restaurar scroll
+    }
+
+    function loadRandomGame() {
+        if (currentLives <= 0) {
+            closeOrchestrator();
+            return;
+        }
+
+        const randomGame = microgames[Math.floor(Math.random() * microgames.length)];
+
+        // Fase de "Prepárate"
+        transitionText.textContent = "¡PREPÁRATE!";
+        transitionText.style.color = "var(--text-color)";
+        transitionText.style.textShadow = "2px 2px var(--neon-magenta)";
+        transitionOverlay.classList.remove('hidden');
+        iframe.src = "about:blank"; // Limpiar iframe anterior
+
+        setTimeout(() => {
+            transitionOverlay.classList.add('hidden');
+            // Cargar el juego pasándole el score actual por URL (para dificultad progresiva si el juego lo soporta)
+            iframe.src = `${randomGame}?sysScore=${currentScore}`;
+            iframe.focus();
+        }, 800);
+    }
+
+    function handleGameResult(won) {
+        if (won) {
+            currentScore++;
+            transitionText.textContent = "¡ÉXITO!";
+            transitionText.style.color = "var(--neon-lime)";
+            transitionText.style.textShadow = "0 0 10px var(--neon-lime)";
+        } else {
+            currentLives--;
+            transitionText.textContent = "¡FALLO!";
+            transitionText.style.color = "#ff4444";
+            transitionText.style.textShadow = "0 0 10px #ff0000";
+        }
+
+        updateOrchestratorUI();
+        transitionOverlay.classList.remove('hidden');
+        iframe.src = "about:blank"; // Inmediatamente ocultar el juego fallado/ganado
+
+        setTimeout(() => {
+            if (currentLives > 0) {
+                loadRandomGame(); // Directo a otro juego
+            } else {
+                // Perder las 3 vidas = volver al inicio
+                closeOrchestrator();
+            }
+        }, 1200);
+    }
+
+    // Escuchar mensajes provenientes de los iframes
+    window.addEventListener('message', (event) => {
+        // En producción se validaría event.origin
+        if (event.data && event.data.type === 'game_result') {
+            handleGameResult(event.data.win);
+        }
+    });
+
+    // Eventos UI del Orquestador
+    if (btnPlayHero) {
+        btnPlayHero.addEventListener('click', (e) => {
+            e.preventDefault(); // Evitar scroll
+            initOrchestrator();
+        });
+    }
+
+    closeBtn.addEventListener('click', closeOrchestrator);
+
     console.log('Microjuegos Sergi y Hugo - Landing Page Loaded');
 });

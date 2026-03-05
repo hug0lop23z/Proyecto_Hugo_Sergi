@@ -122,8 +122,8 @@ function update() {
         // Arpón hitbox: h.x-5 a h.x+5, h.y a h.y+60
         if (
             gameState.fishLane === h.lane && // Misma linea
-            h.y + HARPOON_HEIGHT > fishY - FISH_SIZE/2 && // Arpón llega al top del pez
-            h.y < fishY + FISH_SIZE/2 // Arpón no ha pasado completamente el pez
+            h.y + HARPOON_HEIGHT > fishY - FISH_SIZE / 2 && // Arpón llega al top del pez
+            h.y < fishY + FISH_SIZE / 2 // Arpón no ha pasado completamente el pez
         ) {
             // Impacto!
             handleCollision(i);
@@ -147,7 +147,7 @@ function checkLevel() {
     // Nivel 1: 0-10 (Speed 4)
     // Nivel 2: 11-20 (Speed 7)
     // Nivel 3: 21-29 (Speed 10)
-    
+
     let oldLevel = gameState.level;
 
     if (gameState.score >= 21) {
@@ -177,7 +177,7 @@ function spawnHarpoon() {
 function handleCollision(index) {
     // Eliminar arpón
     gameState.harpoons.splice(index, 1);
-    
+
     // Quitar vida
     gameState.lives--;
     updateUI();
@@ -202,13 +202,27 @@ function checkWin() {
 
 function gameOver() {
     gameState.isRunning = false;
-    finalScoreEl.textContent = gameState.score;
-    gameOverScreen.style.display = 'flex';
+
+    setTimeout(() => {
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'game_result', win: false }, '*');
+        } else {
+            finalScoreEl.textContent = gameState.score;
+            gameOverScreen.style.display = 'flex';
+        }
+    }, 1000);
 }
 
 function victory() {
     gameState.isRunning = false;
-    victoryScreen.style.display = 'flex';
+
+    setTimeout(() => {
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'game_result', win: true }, '*');
+        } else {
+            victoryScreen.style.display = 'flex';
+        }
+    }, 1000);
 }
 
 function updateUI() {
@@ -238,7 +252,7 @@ function draw() {
     // Dibujar Personaje (Pez)
     const fishX = getLaneCenter(gameState.fishLane);
     const fishY = canvas.height - 80;
-    
+
     // Sombra
     ctx.fillStyle = "rgba(0,0,0,0.3)";
     ctx.beginPath();
@@ -250,7 +264,7 @@ function draw() {
     ctx.beginPath();
     ctx.ellipse(fishX, fishY, 20, 30, 0, 0, Math.PI * 2); // Cuerpo vertical ovalado
     ctx.fill();
-    
+
     // Aletas
     ctx.fillStyle = "#FFA500";
     ctx.beginPath();
@@ -276,7 +290,7 @@ function draw() {
     ctx.arc(fishX - 8, fishY - 10, 2, 0, Math.PI * 2);
     ctx.arc(fishX + 8, fishY - 10, 2, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Emoji alternativo si se prefiere:
     // ctx.font = "40px Arial";
     // ctx.textAlign = "center";
@@ -300,7 +314,7 @@ function draw() {
         ctx.lineTo(hX + 8, hY + HARPOON_HEIGHT); // Der
         ctx.lineTo(hX, hY + HARPOON_HEIGHT + 15); // Punta abajo
         ctx.fill();
-        
+
         // Emoji alternativo:
         // ctx.fillText(harpoonEmoji, hX, hY + 30);
     }

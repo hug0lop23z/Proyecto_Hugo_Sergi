@@ -31,10 +31,10 @@ function startRound() {
     // Empezamos con una diferencia de luminosidad de 25%.
     // A medida que la puntuación sube, la diferencia baja, hasta un mínimo de tan solo 2.5%.
     const lightDifference = Math.max(2.5, 25 - (score * 1.5));
-    
+
     // 2. Lógica del color de la fruta
     const hue = Math.floor(Math.random() * 360); // Tono aleatorio (0-360)
-    const saturation = 85; 
+    const saturation = 85;
     const baseLightness = 60; // Frutas normales (brillantes)
     const darkLightness = baseLightness - lightDifference; // La fruta objetivo (más oscura)
 
@@ -42,11 +42,11 @@ function startRound() {
     const targetColor = `hsl(${hue}, ${saturation}%, ${darkLightness}%)`;
 
     // Limpiar el área de juego
-    gameArea.innerHTML = ''; 
+    gameArea.innerHTML = '';
 
     // Elegir cuál de las 3 frutas será la correcta
     const correctFruitIndex = Math.floor(Math.random() * 3);
-    
+
     // Obtener las dimensiones del campo donde pueden aparecer (con margen)
     const padding = 15;
     const maxW = gameArea.clientWidth - FRUIT_SIZE - padding * 2;
@@ -63,7 +63,7 @@ function startRound() {
                 x: padding + Math.random() * maxW,
                 y: padding + Math.random() * maxH
             };
-            
+
             // Verificar colisión con otras frutas ya colocadas
             for (let p of usedPositions) {
                 const dx = p.x - pos.x;
@@ -76,7 +76,7 @@ function startRound() {
             }
             attempts++;
         } while (!isValid && attempts < 50); // Intentar colocarla máximo 50 veces
-        
+
         usedPositions.push(pos);
         return pos;
     }
@@ -112,16 +112,24 @@ function handleFruitClick(isCorrect) {
 
     if (isCorrect) {
         // Acierto
-        score++;
-        scoreEl.textContent = score;
-        
-        // Efecto visual al acertar (encoge el área un poquito y vuelve)
+        gameActive = false; // Detener rondas para orquestador
+        clearTimeout(timerTimeout);
+
+        // Efecto visual al acertar
         gameArea.style.transform = 'scale(0.98)';
-        setTimeout(() => gameArea.style.transform = 'scale(1)', 100);
-        
-        startRound();
+        setTimeout(() => {
+            gameArea.style.transform = 'scale(1)';
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'game_result', win: true }, '*');
+            } else {
+                score++;
+                scoreEl.textContent = score;
+                startRound();
+                gameActive = true; // Restaurar para standalone
+            }
+        }, 800);
     } else {
-        // Error (Hizo clic en la fruta equivocada)
+        // Error
         endGame();
     }
 }
@@ -130,7 +138,7 @@ function resetAndStartTimerBar() {
     // Para reiniciar la transición CSS, quitamos temporalmente la transición y reseteamos el transform
     timerBar.style.transition = 'none';
     timerBar.style.transform = 'scaleX(1)';
-    
+
     // Forzamos un 'reflow' de la página antes de aplicar la nueva animación
     void timerBar.offsetWidth;
 
@@ -149,15 +157,21 @@ function resetAndStartTimerBar() {
 function endGame() {
     gameActive = false;
     clearTimeout(timerTimeout);
-    
+
     // Detener la barra visualmente en donde se haya quedado
     const computedTransform = window.getComputedStyle(timerBar).transform;
     timerBar.style.transition = 'none';
     timerBar.style.transform = computedTransform;
-    
-    // Mostrar fin de partida
-    finalScoreEl.textContent = score;
-    modal.classList.remove('hidden');
+
+    setTimeout(() => {
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'game_result', win: false }, '*');
+        } else {
+            // Mostrar fin de partida
+            finalScoreEl.textContent = score;
+            modal.classList.remove('hidden');
+        }
+    }, 1000);
 }
 
 // Configurar botón de reinicio

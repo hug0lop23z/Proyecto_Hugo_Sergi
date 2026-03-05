@@ -120,6 +120,23 @@
         </div>
     </section>
 
+    <!-- ORCHESTRATOR MODAL -->
+    <div id="orchestrator-modal" class="hidden">
+        <div class="orchestrator-ui">
+            <div class="score-display">PUNTOS: <span id="orch-score">0</span></div>
+            <div class="lives-display" id="orch-lives">❤️❤️❤️</div>
+            <button id="orch-close" aria-label="Cerrar juego">✖</button>
+        </div>
+        <div class="iframe-container">
+            <iframe id="game-iframe" src="about:blank" allow="autoplay"></iframe>
+        </div>
+
+        <!-- Overlays del orquestador -->
+        <div id="orch-transition-overlay" class="hidden">
+            <h2 id="orch-transition-text">¡PREPARATE!</h2>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer id="main-footer">
         <p>Creado por <strong>Sergi y Hugo</strong> &copy; 2024</p>

@@ -192,14 +192,29 @@ function endGame(victory) {
         msgText.innerText = "¡Edificio Completado!";
         msgText.style.color = "#4cc9f0";
         restartBtn.style.display = "none";
-        setTimeout(() => window.nextLevel(), 1500);
+
+        setTimeout(() => {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'game_result', win: true }, '*');
+            } else {
+                window.nextLevel();
+            }
+        }, 1500);
+
     } else {
         msgText.innerText = "Derrota...";
         msgText.style.color = "#f94144";
-        lives--;
-        console.log(`Fallo. Vidas restantes (simuladas): ${lives}`);
         restartBtn.style.display = "block";
         restartBtn.innerText = "Reintentar";
+
+        setTimeout(() => {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'game_result', win: false }, '*');
+            } else {
+                lives--;
+                console.log(`Fallo. Vidas restantes (simuladas): ${lives}`);
+            }
+        }, 1500);
     }
 }
 

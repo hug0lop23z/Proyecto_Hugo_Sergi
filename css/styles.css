@@ -1,13 +1,16 @@
 /* VARIABLES & RESETS */
 :root {
-    --bg-color: #0a0a12; /* Azul noche muy oscuro */
+    --bg-color: #0a0a12;
+    /* Azul noche muy oscuro */
     --text-color: #e0e0e0;
     --neon-cyan: #0ff;
     --neon-magenta: #f0f;
     --neon-lime: #39ff14;
-    
-    --font-heading: 'Press Start 2P', cursive; /* Google Font Pixel style */
-    --font-body: 'Rajdhani', sans-serif; /* Google Font Tech style */
+
+    --font-heading: 'Press Start 2P', cursive;
+    /* Google Font Pixel style */
+    --font-body: 'Rajdhani', sans-serif;
+    /* Google Font Tech style */
 }
 
 * {
@@ -21,7 +24,8 @@ body {
     color: var(--text-color);
     font-family: var(--font-body);
     line-height: 1.6;
-    overflow-x: hidden; /* Evitar scroll horizontal por animaciones */
+    overflow-x: hidden;
+    /* Evitar scroll horizontal por animaciones */
 }
 
 a {
@@ -54,13 +58,11 @@ ul {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        to bottom,
-        rgba(255,255,255,0),
-        rgba(255,255,255,0) 50%,
-        rgba(0,0,0,0.2) 50%,
-        rgba(0,0,0,0.2)
-    );
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0) 50%,
+            rgba(0, 0, 0, 0.2) 50%,
+            rgba(0, 0, 0, 0.2));
     background-size: 100% 4px;
     pointer-events: none;
     z-index: 2;
@@ -81,7 +83,8 @@ h1 {
 }
 
 /* Glitch effect simplistic implementation */
-.glitch::before, .glitch::after {
+.glitch::before,
+.glitch::after {
     content: attr(data-text);
     position: absolute;
     top: 0;
@@ -100,28 +103,63 @@ h1 {
 
 .glitch::after {
     left: -2px;
-    text-shadow: -1px 0 var(--neon-earth); /* Fallback or different color */
-    text-shadow: -2px 0 var(--neon-lime); 
+    text-shadow: -1px 0 var(--neon-earth);
+    /* Fallback or different color */
+    text-shadow: -2px 0 var(--neon-lime);
     clip: rect(85px, 550px, 140px, 0);
     animation: glitch-anim-2 3s infinite linear alternate-reverse;
 }
 
 @keyframes glitch-anim-1 {
-    0% { clip: rect(20px, 9999px, 80px, 0); }
-    20% { clip: rect(60px, 9999px, 10px, 0); }
-    40% { clip: rect(90px, 9999px, 50px, 0); }
-    60% { clip: rect(10px, 9999px, 90px, 0); }
-    80% { clip: rect(40px, 9999px, 40px, 0); }
-    100% { clip: rect(70px, 9999px, 20px, 0); }
+    0% {
+        clip: rect(20px, 9999px, 80px, 0);
+    }
+
+    20% {
+        clip: rect(60px, 9999px, 10px, 0);
+    }
+
+    40% {
+        clip: rect(90px, 9999px, 50px, 0);
+    }
+
+    60% {
+        clip: rect(10px, 9999px, 90px, 0);
+    }
+
+    80% {
+        clip: rect(40px, 9999px, 40px, 0);
+    }
+
+    100% {
+        clip: rect(70px, 9999px, 20px, 0);
+    }
 }
 
 @keyframes glitch-anim-2 {
-    0% { clip: rect(90px, 9999px, 10px, 0); }
-    20% { clip: rect(10px, 9999px, 60px, 0); }
-    40% { clip: rect(50px, 9999px, 90px, 0); }
-    60% { clip: rect(90px, 9999px, 10px, 0); }
-    80% { clip: rect(20px, 9999px, 70px, 0); }
-    100% { clip: rect(40px, 9999px, 40px, 0); }
+    0% {
+        clip: rect(90px, 9999px, 10px, 0);
+    }
+
+    20% {
+        clip: rect(10px, 9999px, 60px, 0);
+    }
+
+    40% {
+        clip: rect(50px, 9999px, 90px, 0);
+    }
+
+    60% {
+        clip: rect(90px, 9999px, 10px, 0);
+    }
+
+    80% {
+        clip: rect(20px, 9999px, 70px, 0);
+    }
+
+    100% {
+        clip: rect(40px, 9999px, 40px, 0);
+    }
 }
 
 .subtitle {
@@ -153,9 +191,17 @@ h1 {
 }
 
 @keyframes pulse-anim {
-    0% { box-shadow: 0 0 10px var(--neon-lime); }
-    50% { box-shadow: 0 0 25px var(--neon-lime), 0 0 5px var(--neon-lime); }
-    100% { box-shadow: 0 0 10px var(--neon-lime); }
+    0% {
+        box-shadow: 0 0 10px var(--neon-lime);
+    }
+
+    50% {
+        box-shadow: 0 0 25px var(--neon-lime), 0 0 5px var(--neon-lime);
+    }
+
+    100% {
+        box-shadow: 0 0 10px var(--neon-lime);
+    }
 }
 
 .pulse {
@@ -182,6 +228,55 @@ h2 {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+}
+
+/* GAMES SECTION */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.game-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--neon-lime);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    text-decoration: none;
+    /* La opacidad y el transform iniciales son aplicados por script.js */
+}
+
+.game-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(57, 255, 20, 0.3);
+    background: rgba(57, 255, 20, 0.1);
+}
+
+.game-card .icon {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    transition: transform 0.3s ease;
+}
+
+.game-card:hover .icon {
+    transform: scale(1.1);
+}
+
+.game-card h3 {
+    font-size: 1.1rem;
+    color: var(--neon-lime);
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    margin: 0;
+    line-height: 1.4;
 }
 
 /* DEVLOG SECTION */
@@ -300,7 +395,7 @@ h2 {
     .subtitle {
         font-size: 1.1rem;
     }
-    
+
     .cta-button {
         padding: 1rem 2rem;
         font-size: 1rem;

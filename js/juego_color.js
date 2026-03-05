@@ -156,9 +156,10 @@ function endGame() {
     timerBar.style.transform = computedTransform;
 
     if (window.parent !== window) {
-        window.parent.postMessage({ type: 'game_result', win: true }, '*');
+        window.parent.postMessage({ type: 'game_result', win: false }, '*');
     } else {
         finalScoreEl.textContent = score;
+        window.parent.postMessage({ type: 'game_result', win: true }, '*');
         modal.classList.remove('hidden');
     }
 }

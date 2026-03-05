@@ -112,24 +112,16 @@ function handleFruitClick(isCorrect) {
 
     if (isCorrect) {
         // Acierto
-        gameActive = false; // Detener rondas para orquestador
-        clearTimeout(timerTimeout);
+        score++;
+        scoreEl.textContent = score;
 
-        // Efecto visual al acertar
+        // Efecto visual al acertar (encoge el área un poquito y vuelve)
         gameArea.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            gameArea.style.transform = 'scale(1)';
-            if (window.parent !== window) {
-                window.parent.postMessage({ type: 'game_result', win: true }, '*');
-            } else {
-                score++;
-                scoreEl.textContent = score;
-                startRound();
-                gameActive = true; // Restaurar para standalone
-            }
-        }, 800);
+        setTimeout(() => gameArea.style.transform = 'scale(1)', 100);
+
+        startRound();
     } else {
-        // Error
+        // Error (Hizo clic en la fruta equivocada)
         endGame();
     }
 }
@@ -163,15 +155,9 @@ function endGame() {
     timerBar.style.transition = 'none';
     timerBar.style.transform = computedTransform;
 
-    setTimeout(() => {
-        if (window.parent !== window) {
-            window.parent.postMessage({ type: 'game_result', win: false }, '*');
-        } else {
-            // Mostrar fin de partida
-            finalScoreEl.textContent = score;
-            modal.classList.remove('hidden');
-        }
-    }, 1000);
+    // Mostrar fin de partida
+    finalScoreEl.textContent = score;
+    modal.classList.remove('hidden');
 }
 
 // Configurar botón de reinicio

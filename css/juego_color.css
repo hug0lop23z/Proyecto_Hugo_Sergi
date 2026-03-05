@@ -18,7 +18,8 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
-    user-select: none; /* Prevenir selección de texto al hacer clic rápido */
+    user-select: none;
+    /* Prevenir selección de texto al hacer clic rápido */
 }
 
 /* --- Contenedor Principal --- */
@@ -101,7 +102,8 @@ h1 {
     position: relative;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transition: transform 0.1s ease-out; /* Efecto sutil al puntuar */
+    transition: transform 0.1s ease-out;
+    /* Efecto sutil al puntuar */
 }
 
 /* --- Diseño de las Frutas (Círculos Brillantes) --- */
@@ -155,7 +157,7 @@ h1 {
     z-index: 100;
     opacity: 1;
     transition: opacity 0.4s ease, transform 0.4s ease;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-modal.hidden {

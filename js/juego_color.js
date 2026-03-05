@@ -155,9 +155,12 @@ function endGame() {
     timerBar.style.transition = 'none';
     timerBar.style.transform = computedTransform;
 
-    // Mostrar fin de partida
-    finalScoreEl.textContent = score;
-    modal.classList.remove('hidden');
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'game_result', win: true }, '*');
+    } else {
+        finalScoreEl.textContent = score;
+        modal.classList.remove('hidden');
+    }
 }
 
 // Configurar botón de reinicio
